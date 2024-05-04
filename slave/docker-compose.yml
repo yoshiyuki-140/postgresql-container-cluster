@@ -1,0 +1,18 @@
+services:
+  postgres-slave:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: slavepassword
+      POSTGRES_USER: slaveuser
+      POSTGRES_DB: slavedb
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command: >
+      sh -c "while ! pg_isready -h 192.168.3.2 -p 5432; do sleep 1; done;
+             pg_basebackup -h 192.168.3.2 -D /var/lib/postgresql/data -U slaveuser -vP -W -R -X stream -c fast"
+    volumes:
+      - ./slave-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+volumes:
+  slave-data:
