@@ -22,7 +22,7 @@ services:
       sh -c "while ! pg_isready -h postgres-master -p 5432; do sleep 1; done;
              pg_basebackup -h postgres-master -D /var/lib/postgresql/data -U masteruser -vP -W -R -X stream -c fast"
     volumes:
-      - slave-data:/var/lib/postgresql/data
+      - ./slave-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     depends_on:
