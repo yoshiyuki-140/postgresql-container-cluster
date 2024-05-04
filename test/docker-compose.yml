@@ -1,0 +1,33 @@
+services:
+  postgres-master:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: masterpassword
+      POSTGRES_USER: masteruser
+      POSTGRES_DB: masterdb
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - ./master-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  postgres-slave:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: slavepassword
+      POSTGRES_USER: slaveuser
+      POSTGRES_DB: slavedb
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command: >
+      sh -c "while ! pg_isready -h postgres-master -p 5432; do sleep 1; done;
+             pg_basebackup -h postgres-master -D /var/lib/postgresql/data -U masteruser -vP -W -R -X stream -c fast"
+    volumes:
+      - slave-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    depends_on:
+      - postgres-master
+
+volumes:
+  master-data:
+  slave-data:
