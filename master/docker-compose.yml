@@ -3,9 +3,9 @@ services:
   postgres-master:
     image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgresDB
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: root
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - ./master-data:/var/lib/postgresql/data
