@@ -3,9 +3,9 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_PASSWORD: slavepassword
-      POSTGRES_USER: slaveuser
-      POSTGRES_DB: slavedb
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgresDB
       POSTGRES_HOST_AUTH_METHOD: trust
     command: >
       sh -c "while ! pg_isready -h 192.168.3.2 -p 5432; do sleep 1; done;
@@ -13,6 +13,6 @@ services:
     volumes:
       - ./slave-data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
 volumes:
   slave-data:
