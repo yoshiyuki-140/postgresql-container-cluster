@@ -2,9 +2,9 @@ services:
   postgres-master:
     image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: masterpassword
-      POSTGRES_USER: masteruser
-      POSTGRES_DB: masterdb
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: root
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - ./master-data:/var/lib/postgresql/data
@@ -14,13 +14,14 @@ services:
   postgres-slave:
     image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: slavepassword
-      POSTGRES_USER: slaveuser
-      POSTGRES_DB: slavedb
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: root
       POSTGRES_HOST_AUTH_METHOD: trust
     command: >
-      sh -c "while ! pg_isready -h postgres-master -p 5432; do sleep 1; done;
-             pg_basebackup -h postgres-master -D /var/lib/postgresql/data -U masteruser -vP -W -R -X stream -c fast"
+      sh -c "rm -rf /var/lib/postgresql/data/*;  # セーフガードとして空でないか確認してください
+             while ! pg_isready -h 192.168.3.2 -p 5432; do sleep 1; done;
+             pg_basebackup -h 192.168.3.2 -D /var/lib/postgresql/data -U root -vP -W -R -X stream -c fast"
     volumes:
       - ./slave-data:/var/lib/postgresql/data
     ports:
