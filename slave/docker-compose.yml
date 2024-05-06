@@ -8,9 +8,8 @@ services:
       POSTGRES_DB: root
       POSTGRES_HOST_AUTH_METHOD: trust
     command: >
-      sh -c "rm -rf /var/lib/postgresql/data/*;  # セーフガードとして空でないか確認してください
-             while ! pg_isready -h 192.168.3.2 -p 5432; do sleep 1; done;
-             pg_basebackup -h 192.168.3.2 -D /var/lib/postgresql/data -U root -vP -W -R -X stream -c fast"
+      sh -c "while ! pg_isready -h 192.168.3.2 -p 5432; do sleep 1; done;
+             pg_basebackup -h 192.168.3.2 -D /var/lib/postgresql/data -U root -vP -W -R -X stream -c fast && postgres"
     volumes:
       - ./slave-data:/var/lib/postgresql/data
     ports:
